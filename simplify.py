@@ -15,6 +15,7 @@ nPointsPrev = len(data['coordinates'])
 
 simplify = VisvalingamSimplification(data['coordinates'])
 data['coordinates'] = simplify.simplifyLineString(float(threshold))
+data['threshold'] = threshold
 
 print 'Pointreduction:', nPointsPrev, '/',len(data['coordinates'])
 

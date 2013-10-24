@@ -5,7 +5,7 @@
   <meta charset="utf-8" />
   <script src="http://cdn.leafletjs.com/leaflet-0.6.1/leaflet.js"></script>
   <script src="http://d3js.org/d3.v3.min.js"></script>
-  <script src="http://mourner.github.io/simplify-js/simplify.js"></script>
+  <script src="http://bl.ocks.org/milkbread/raw/5909613/simplify_RK_1.1.js"></script>
   <style>
   @import url(http://cdn.leafletjs.com/leaflet-0.6.1/leaflet.css);
   </style>
@@ -25,12 +25,22 @@
     var polyline = L.polyline(json.coordinates.map(function(d){return [d[1],d[0]]}), {color: "#f00"}).addTo(map);
     overlays['in.json ['+json.coordinates.length+' Points]'] = polyline;
   })
+  d3.json("in.json", function(error, json) {
+    var d3Simplify = d3.simplify();
+    d3Simplify.projection(function (point){return point});
+    var allPoints = json.coordinates;
+    d3Simplify( {'type':'LineString', 'coordinates':allPoints})
+    allPoints = allPoints.filter(function(point,i){return point[2]>0.07})
+    var polyline = L.polyline(allPoints.map(function(d){return [d[1],d[0]]}), {color: "#00f"}).addTo(map);
+    overlays['compare ['+allPoints.length+' Points]'] = polyline;
+    
+  })
   d3.json("out.json", function(error, json) {
     var polyline = L.polyline(json.coordinates.map(function(d){return [d[1],d[0]]}), {color: "#0f0"}).addTo(map);
     overlays['out.json ['+json.coordinates.length+' Points]'] = polyline;
-    L.control.layers(baseLayers, overlays).addTo(map);
   }) 
   
+  setTimeout(function(){L.control.layers(baseLayers, overlays).addTo(map);},1000);
 
   
 </script>

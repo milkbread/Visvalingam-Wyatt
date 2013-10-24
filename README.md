@@ -27,14 +27,27 @@ Execute by:
 	python simplify.py -h
 	```
 
-View results in browser:
+View results in browser (exemplary workflow for tests):
+
+* Download the repository
+
+* Simplify your data
+
+	```sh
+	python simplify.py -i in.json -o out.json -t 0.0005
+	```
 
 * setup local server (!necessary for D3.js!)
 
 	```sh
 	python -m SimpleHTTPServer 8888
 	```
+
 * open in browser: [localhost:8888/index.html](http://localhost:8888/index.html)
+
+* On Demand: adjust the filenames within the index.html (lines 24 & 28)
+
+* evaluate the resulting data and try another threshold
 
 *Impacient to see some results? See the [index.html](http://milkbread.github.io/Visvalingam-Wyatt) here!*
 

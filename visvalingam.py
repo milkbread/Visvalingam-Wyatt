@@ -28,7 +28,7 @@ class VisvalingamSimplification:
 		b = math.sqrt(pow(P[0]-nextP[0],2)+pow(P[1]-nextP[1],2))
 		c = math.sqrt(pow(nextP[0]-prevP[0],2)+pow(nextP[1]-prevP[1],2))
 		#calculate the area of the triangle
-		s = (a+b+c)/2
+		s = (a+b+c)/2.0
 		area_0 = s*(s-a)*(s-b)*(s-c)
 		area_0 = abs(area_0)
 		area=math.sqrt(area_0)
@@ -49,22 +49,24 @@ class VisvalingamSimplification:
 				self.line[this].append(area)
 			else:
 				self.line[this][2] = area
-		
 		return minArea
 
 	#check for smallest triangles and remove corresponding points from index
 	def removeSmallestAreaIndex(self, minArea):
 		newIndizes = []
+		print len(self.indizes)
 		for i in range(1,len(self.indizes)-1):
 			index = self.indizes[i]
 			if(self.line[index][2]>minArea):
 				newIndizes.append(index)
+		newIndizes.insert(0,self.indizes[0])
+		newIndizes.append(self.indizes[len(self.indizes)-1])
 		self.indizes = newIndizes
 		#return newIndizes
 
 	#do Visvalingam-Calculations until only start-& endpoint are left
 	def enrichLineString(self):
-		while(len(self.indizes)>0):
+		while(len(self.indizes)>2):
 			minArea_ = self.enrichPoints()
 			self.removeSmallestAreaIndex(minArea_)
 		self.enriched = True
