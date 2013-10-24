@@ -3,6 +3,13 @@ Visvalingam-Wyatt
 
 Simple Python-Implementation of a [famous algorithm](http://www2.dcs.hull.ac.uk/CISRG/publications/DPs/DP10/DP10.html)
 
+Download the repository:
+
+```sh
+git clone https://github.com/milkbread/Visvalingam-Wyatt.git
+```
+
+
 Execute by:
 
 * Dummy
