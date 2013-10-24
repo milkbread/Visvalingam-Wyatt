@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Comparison</title>
+  <meta charset="utf-8" />
+  <script src="http://cdn.leafletjs.com/leaflet-0.6.1/leaflet.js"></script>
+  <script src="http://d3js.org/d3.v3.min.js"></script>
+  <script src="http://mourner.github.io/simplify-js/simplify.js"></script>
+  <style>
+  @import url(http://cdn.leafletjs.com/leaflet-0.6.1/leaflet.css);
+  </style>
+</head>
+<body>
+  <div id="map" style="width: 960px; height: 500px"></div>
+  <script>
+  var map = L.map('map').setView([53, 20], 5);
+  var data_attrib = " | Data: <a href='http://www.openstreetmap.org/'>&copy; OpenStreetMap </a>contributers | <a href='http://d3js.org/'>D3.js</a>"
+  var osm = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: "Map: <a href='http://www.openstreetmap.org/'>&copy; OpenStreetMap </a>contributers" + data_attrib});
+  var esri = L.tileLayer('http://services.arcgisonline.com/ArcGIS/rest/services/World_Physical_Map/MapServer/tile/{z}/{y}/{x}.png', {attribution: "Map: <a href='http://www.arcgis.com/home/item.html?id=c4ec722a1cd34cf0a23904aadf8923a0'>ArcGIS - World Physical Map</a>" + data_attrib});
+  var stamen = L.tileLayer('http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png', {attribution: "Map: <a href='http://maps.stamen.com/#toner/12/37.7706/-122.3782'>Stamen Design</a>" + data_attrib}).addTo(map);
+  var baseLayers = {"stamen": stamen, "OpenStreetMap":osm, "World Physical Map":esri};
+  var overlays = {};
+
+  d3.json("in.json", function(error, json) {
+    var polyline = L.polyline(json.coordinates.map(function(d){return [d[1],d[0]]}), {color: "#f00"}).addTo(map);
+    overlays['in.json ['+json.coordinates.length+' Points]'] = polyline;
+  })
+  d3.json("out.json", function(error, json) {
+    var polyline = L.polyline(json.coordinates.map(function(d){return [d[1],d[0]]}), {color: "#0f0"}).addTo(map);
+    overlays['out.json ['+json.coordinates.length+' Points]'] = polyline;
+    L.control.layers(baseLayers, overlays).addTo(map);
+  }) 
+  
+
+  
+</script>
+ </body>
+</html>
