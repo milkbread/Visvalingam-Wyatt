@@ -29,6 +29,8 @@ View results in browser:
 	```
 * open in browser: [localhost:8888/index.html](http://localhost:8888/index.html)
 
+*Impacient to see some results? See the [index.html](http://milkbread.github.io/Visvalingam-Wyatt) here!*
+
 
 Inspired by M.Bostocks JavaScript-Implementation:
 
