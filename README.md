@@ -23,6 +23,7 @@ Execute by:
 View results in browser:
 
 * setup local server (!necessary for D3.js!)
+
 	```sh
 	python -m SimpleHTTPServer 8888
 	```
