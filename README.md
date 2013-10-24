@@ -27,8 +27,7 @@ View results in browser:
 	```sh
 	python -m SimpleHTTPServer 8888
 	```
-* open in browser
-	[localhost:8888/index.html](http://localhost:8888/index.html)
+* open in browser: [localhost:8888/index.html](http://localhost:8888/index.html)
 
 
 Inspired by M.Bostocks JavaScript-Implementation:
