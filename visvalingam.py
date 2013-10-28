@@ -8,6 +8,7 @@
 #http://www.serlo.org/math/wiki/article/view/abstand-zweier-punkte-berechnen
 
 import math
+import json
 
 class VisvalingamSimplification:
 	def __init__(self, line_):
@@ -16,6 +17,12 @@ class VisvalingamSimplification:
 		for i in xrange(len(self.line)):
 			self.indizes.append(i)
 		self.enriched = False
+
+		self.json = {}
+		self.json['type']='DemoCollection'
+		self.json['properties']={}
+		self.json['features'] = []
+		self.featCounter = 0
 
 	#calculate the area of one triangle
 	def getTriangleArea(self, prevP_, P_, nextP_):
@@ -36,18 +43,26 @@ class VisvalingamSimplification:
 
 	#add the area of the triangle to each point
 	def enrichPoints(self):
+		demoFeat = {}
+		demoFeat['type']='DemoFeature'
+		demoFeat['properties']={'id':self.featCounter}
+		demoFeat['stage']=self.featCounter
+		self.featCounter+=1
+		demoFeat['geometries']=[]
+		
 		minArea = float("infinity");
 		for i in range(1,len(self.indizes)-1):
 			this = self.indizes[i]
 			prev = self.indizes[i-1]
 			next = self.indizes[i+1]
 			area=self.getTriangleArea(self.line[prev], self.line[this], self.line[next])
-			#save the area of the triangle as 3rd coordinate
+			#reset minim value for area, if current is smaller than all previous
 			if(area<minArea):
 				minArea=area
-			if(len(self.line[this])<3):
+			#save the area of the triangle as 3rd coordinate
+			if(len(self.line[this])<3):		#add if it does not exist
 				self.line[this].append(area)
-			else:
+			else:							#replace if it does exist already
 				self.line[this][2] = area
 		return minArea
 
