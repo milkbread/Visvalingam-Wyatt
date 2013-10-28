@@ -23,25 +23,24 @@
 
   d3.json("demoData.geojson", function(error, json_) {
     json = json_.features[0].geometry
-    var polyline = L.polyline(json.coordinates.map(function(d){return [d[1],d[0]]}), {color: "#f00"}).addTo(map);
+    var polyline = L.polyline(json.coordinates.map(function(d){return [d[1],d[0]]}), {color: "rgba(255,0,0,0.2)"}).addTo(map);
     map.fitBounds(polyline.getBounds())
     overlays['in.json ['+json.coordinates.length+' Points]'] = polyline;
   })
-  d3.json("demoData.geojson", function(error, json_) {
-    json = json_.features[0].geometry
-    var d3Simplify = d3.simplify();
-    d3Simplify.projection(function (point){return point});
-    var allPoints = json.coordinates;
-    d3Simplify( {'type':'LineString', 'coordinates':allPoints})
-    allPoints = allPoints.filter(function(point,i){return point[2]>0.0007})
-    var polyline = L.polyline(allPoints.map(function(d){return [d[1],d[0]]}), {color: "#00f"}).addTo(map);
-    overlays['compare ['+allPoints.length+' Points]'] = polyline;
-    
+  d3.json("demo.json", function(error, json_) {
+    console.log(json_.features[0])
+    json_.features[2].geometries.forEach(function(d){
+      console.log(d)
+      if(d.type=='LineString'){
+        var polyline = L.polyline(d.coordinates.map(function(e){return [e[1],e[0]]}), {color: "#777"}).addTo(map);
+      }
+      else if(d.type=='Polygon')L.polygon(d.coordinates.map(function(f){return f.map(function(g){return [g[1],g[0]]})}), {color: "rgba(255,0,0,0.5)"}).addTo(map);
+    })
   })
-  d3.json("simpleDData.geojson", function(error, json) {
+  /*d3.json("simpleDData.geojson", function(error, json) {
     var polyline = L.polyline(json.coordinates.map(function(d){return [d[1],d[0]]}), {color: "#0f0"}).addTo(map);
     overlays['out.json ['+json.coordinates.length+' Points]'] = polyline;
-  }) 
+  }) */
   
   setTimeout(function(){L.control.layers(baseLayers, overlays).addTo(map);},1000);
 

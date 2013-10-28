@@ -55,6 +55,11 @@ class VisvalingamSimplification:
 			this = self.indizes[i]
 			prev = self.indizes[i-1]
 			next = self.indizes[i+1]
+
+			demoTriangle = {}
+			demoTriangle = {'type':'Polygon','coordinates':[[self.line[prev], self.line[this], self.line[next],self.line[prev]]]}
+			demoFeat['geometries'].append(demoTriangle)
+
 			area=self.getTriangleArea(self.line[prev], self.line[this], self.line[next])
 			#reset minim value for area, if current is smaller than all previous
 			if(area<minArea):
@@ -64,6 +69,14 @@ class VisvalingamSimplification:
 				self.line[this].append(area)
 			else:							#replace if it does exist already
 				self.line[this][2] = area
+
+		demoLine = []
+		for j in range(0,len(self.indizes)):
+			demoLine.append(self.line[j])
+		demoFeat['geometries'].append({'type':'LineString', 'coordinates':demoLine})
+
+		self.json['features'].append(demoFeat)
+		
 		return minArea
 
 	#check for smallest triangles and remove corresponding points from index
@@ -101,4 +114,10 @@ class VisvalingamSimplification:
 			else:
 				newLine.append(p)
 		#print len(newLine)
+
+		print self.json
+		json_file=open('demo.json','w');
+		json.dump(self.json, json_file);
+		json_file.close();
+
 		return newLine
