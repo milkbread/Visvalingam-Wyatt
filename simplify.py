@@ -11,6 +11,8 @@ json_data=open(input,'r')
 data = json.load(json_data)	#parse JSON-content
 json_data.close()
 
+data = data['features'][0]['geometry']
+
 nPointsPrev = len(data['coordinates'])
 
 simplify = VisvalingamSimplification(data['coordinates'])
