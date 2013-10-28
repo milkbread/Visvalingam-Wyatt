@@ -21,11 +21,13 @@
   var baseLayers = {"stamen": stamen, "OpenStreetMap":osm, "World Physical Map":esri};
   var overlays = {};
 
-  d3.json("in.json", function(error, json) {
+  d3.json("demoData.geojson", function(error, json_) {
+    json = json_.features[0].geometry
     var polyline = L.polyline(json.coordinates.map(function(d){return [d[1],d[0]]}), {color: "#f00"}).addTo(map);
+    map.fitBounds(polyline.getBounds())
     overlays['in.json ['+json.coordinates.length+' Points]'] = polyline;
   })
-  d3.json("in.json", function(error, json) {
+  d3.json("demoData.geojson", function(error, json) {
     var d3Simplify = d3.simplify();
     d3Simplify.projection(function (point){return point});
     var allPoints = json.coordinates;
@@ -35,7 +37,7 @@
     overlays['compare ['+allPoints.length+' Points]'] = polyline;
     
   })
-  d3.json("out.json", function(error, json) {
+  d3.json("simpleDData.geojson", function(error, json) {
     var polyline = L.polyline(json.coordinates.map(function(d){return [d[1],d[0]]}), {color: "#0f0"}).addTo(map);
     overlays['out.json ['+json.coordinates.length+' Points]'] = polyline;
   }) 
