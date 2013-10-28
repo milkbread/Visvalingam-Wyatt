@@ -1,16 +1,16 @@
-Visvalingam-Wyatt
-=================
+## Visvalingam-Wyatt
+## =================
 
 Simple Python-Implementation of a [famous algorithm](http://www2.dcs.hull.ac.uk/CISRG/publications/DPs/DP10/DP10.html)
 
-Download the repository:
+### Download the repository:
 
 ```sh
 git clone https://github.com/milkbread/Visvalingam-Wyatt.git
 ```
 
 
-Execute by:
+### Execute by:
 
 * Dummy
 	```sh
@@ -27,7 +27,7 @@ Execute by:
 	python simplify.py -h
 	```
 
-View results in browser (exemplary workflow for tests):
+### View results in browser *(exemplary workflow for tests)*:
 
 * Download the repository
 
@@ -52,7 +52,7 @@ View results in browser (exemplary workflow for tests):
 *Impacient to see some results? See the [index.html](http://milkbread.github.io/Visvalingam-Wyatt) here!*
 
 
-Inspired by M.Bostocks JavaScript-Implementation:
+### Inspired by M.Bostocks JavaScript-Implementation:
 
 * [Explanation](http://bost.ocks.org/mike/simplify/)
 * [Code](http://bost.ocks.org/mike/simplify/simplify.js)
