@@ -42,12 +42,13 @@ class VisvalingamSimplification:
 			prev = self.indizes[i-1]
 			next = self.indizes[i+1]
 			area=self.getTriangleArea(self.line[prev], self.line[this], self.line[next])
-			#save the area of the triangle as 3rd coordinate
+			#reset minim value for area, if current is smaller than all previous
 			if(area<minArea):
 				minArea=area
-			if(len(self.line[this])<3):
+			#save the area of the triangle as 3rd coordinate
+			if(len(self.line[this])<3):		#add if it does not exist
 				self.line[this].append(area)
-			else:
+			else:							#replace if it does exist already
 				self.line[this][2] = area
 		return minArea
 
