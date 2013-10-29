@@ -5,45 +5,65 @@
   <meta charset="utf-8" />
   <script src="http://cdn.leafletjs.com/leaflet-0.6.1/leaflet.js"></script>
   <script src="http://d3js.org/d3.v3.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
   <script src="http://bl.ocks.org/milkbread/raw/5909613/simplify_RK_1.1.js"></script>
   <style>
   @import url(http://cdn.leafletjs.com/leaflet-0.6.1/leaflet.css);
+  .container{
+    margin-bottom:10px;
+    padding:40px;
+    padding-left:0px;
+    text-align:center;
+  }
   </style>
 </head>
 <body>
-  <div id="map" style="width: 960px; height: 500px"></div>
   <script>
-  var map = L.map('map').setView([53, 20], 5);
-  var data_attrib = " | Data: <a href='http://www.openstreetmap.org/'>&copy; OpenStreetMap </a>contributers | <a href='http://d3js.org/'>D3.js</a>"
-  var osm = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: "Map: <a href='http://www.openstreetmap.org/'>&copy; OpenStreetMap </a>contributers" + data_attrib});
-  var esri = L.tileLayer('http://services.arcgisonline.com/ArcGIS/rest/services/World_Physical_Map/MapServer/tile/{z}/{y}/{x}.png', {attribution: "Map: <a href='http://www.arcgis.com/home/item.html?id=c4ec722a1cd34cf0a23904aadf8923a0'>ArcGIS - World Physical Map</a>" + data_attrib});
-  var stamen = L.tileLayer('http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png', {attribution: "Map: <a href='http://maps.stamen.com/#toner/12/37.7706/-122.3782'>Stamen Design</a>" + data_attrib}).addTo(map);
-  var baseLayers = {"stamen": stamen, "OpenStreetMap":osm, "World Physical Map":esri};
-  var overlays = {};
-
-  d3.json("demoData.geojson", function(error, json_) {
-    json = json_.features[0].geometry
-    var polyline = L.polyline(json.coordinates.map(function(d){return [d[1],d[0]]}), {color: "rgba(255,0,0,0.2)"}).addTo(map);
-    map.fitBounds(polyline.getBounds())
-    overlays['in.json ['+json.coordinates.length+' Points]'] = polyline;
-  })
   d3.json("demo.json", function(error, json_) {
-    console.log(json_.features[0])
-    json_.features[2].geometries.forEach(function(d){
-      console.log(d)
-      if(d.type=='LineString'){
-        var polyline = L.polyline(d.coordinates.map(function(e){return [e[1],e[0]]}), {color: "#777"}).addTo(map);
-      }
-      else if(d.type=='Polygon')L.polygon(d.coordinates.map(function(f){return f.map(function(g){return [g[1],g[0]]})}), {color: "rgba(255,0,0,0.5)"}).addTo(map);
-    })
+    json_.features.forEach(showDemoStages)
   })
-  /*d3.json("simpleDData.geojson", function(error, json) {
-    var polyline = L.polyline(json.coordinates.map(function(d){return [d[1],d[0]]}), {color: "#0f0"}).addTo(map);
-    overlays['out.json ['+json.coordinates.length+' Points]'] = polyline;
-  }) */
-  
-  setTimeout(function(){L.control.layers(baseLayers, overlays).addTo(map);},1000);
 
+  $(window).resize(function() {
+    location.reload()
+  });
+  
+  
+  function showDemoStages(feature, id){
+    var geometries = feature.geometries;
+    var container = d3.select('body').append('div').attr('id',id).attr('class','container')
+
+    container.append('text').text('Stage Nr.'+id).attr('id','text'+id)
+    var test = d3.select('text')
+    console.log(window.innerWidth)
+
+    var width = 500;
+    container.append('div').attr('id','map'+id).style('width',width+'px').style('height','200px').style('margin-left',(window.innerWidth-width)/2 + 'px')
+    var map = L.map('map'+id).setView([53, 20], 5);
+    var data_attrib = " | Data: <a href='http://www.openstreetmap.org/'>&copy; OpenStreetMap </a>contributers | <a href='http://d3js.org/'>D3.js</a>"
+    var stamen = L.tileLayer('http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png', {attribution: "Map: <a href='http://maps.stamen.com/#toner/12/37.7706/-122.3782'>Stamen Design</a>" + data_attrib}).addTo(map);
+    var baseLayers = {"stamen": stamen};
+    var overlays = {};
+    var lGroup = L.layerGroup()
+      
+    var color = d3.scale.category10()
+
+    var polyline;
+    geometries.forEach(function(d,i){
+      if(d.type=='LineString'){
+        polyline = L.polyline(d.coordinates.map(function(e){return [e[1],e[0]]}), {color: "#f00"});
+        overlays['linestring ['+d.coordinates.length+' Points]'] = polyline;
+        map.fitBounds(polyline.getBounds())
+      }
+      else if(d.type=='Polygon'){
+        var polygon = L.polygon(d.coordinates.map(function(f){return f.map(function(g){return [g[1],g[0]]})}), {color: color(i)});
+        lGroup.addLayer(polygon);
+      }
+    })
+    lGroup.addTo(map);
+    polyline.addTo(map);
+    overlays['triangles'] = lGroup;
+    L.control.layers(baseLayers, overlays).addTo(map)
+  }
   
 </script>
  </body>
