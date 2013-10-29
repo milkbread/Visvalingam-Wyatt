@@ -50,17 +50,23 @@ class VisvalingamSimplification:
 		self.featCounter+=1
 		demoFeat['geometries']=[]
 		
+		#add the 1st point (static)
+		demoLine = [self.line[0]]
+
 		minArea = float("infinity");
 		for i in range(1,len(self.indizes)-1):
 			this = self.indizes[i]
 			prev = self.indizes[i-1]
 			next = self.indizes[i+1]
 
-			demoTriangle = {}
-			demoTriangle = {'type':'Polygon','coordinates':[[self.line[prev], self.line[this], self.line[next],self.line[prev]]]}
+			area=self.getTriangleArea(self.line[prev], self.line[this], self.line[next])
+
+			#add the intermediate points (variable)
+			demoLine.append(self.line[this])
+					
+			demoTriangle = {'type':'Polygon','coordinates':[[self.line[prev], self.line[this], self.line[next],self.line[prev]]], 'properties':{'area':area}}
 			demoFeat['geometries'].append(demoTriangle)
 
-			area=self.getTriangleArea(self.line[prev], self.line[this], self.line[next])
 			#reset minim value for area, if current is smaller than all previous
 			if(area<minArea):
 				minArea=area
@@ -70,9 +76,11 @@ class VisvalingamSimplification:
 			else:							#replace if it does exist already
 				self.line[this][2] = area
 
-		demoLine = []
-		for j in range(0,len(self.indizes)):
-			demoLine.append(self.line[j])
+		#print format(minArea, '.6f')
+
+		#add the last point (static)
+		demoLine.append(self.line[len(self.line)-1])
+		
 		demoFeat['geometries'].append({'type':'LineString', 'coordinates':demoLine})
 
 		self.json['features'].append(demoFeat)
@@ -82,7 +90,7 @@ class VisvalingamSimplification:
 	#check for smallest triangles and remove corresponding points from index
 	def removeSmallestAreaIndex(self, minArea):
 		newIndizes = []
-		print len(self.indizes)
+		#print len(self.indizes)
 		for i in range(1,len(self.indizes)-1):
 			index = self.indizes[i]
 			if(self.line[index][2]>minArea):
@@ -115,7 +123,6 @@ class VisvalingamSimplification:
 				newLine.append(p)
 		#print len(newLine)
 
-		print self.json
 		json_file=open('demo.json','w');
 		json.dump(self.json, json_file);
 		json_file.close();

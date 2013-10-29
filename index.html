@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Comparison</title>
+  <title>Demonstration</title>
   <meta charset="utf-8" />
   <script src="http://cdn.leafletjs.com/leaflet-0.6.1/leaflet.js"></script>
   <script src="http://d3js.org/d3.v3.min.js"></script>
@@ -9,41 +9,50 @@
   <script src="http://bl.ocks.org/milkbread/raw/5909613/simplify_RK_1.1.js"></script>
   <style>
   @import url(http://cdn.leafletjs.com/leaflet-0.6.1/leaflet.css);
+  .row{
+    display:inline-block;
+  }
   .container{
     margin-bottom:10px;
-    padding:40px;
+    padding:20px;
     padding-left:0px;
+  }
+  .heading{
+    font-size:24pt;
+  }
+  .centered{
     text-align:center;
   }
   </style>
 </head>
 <body>
+  <h2 class='centered'>How does the Visvalingam-Wyatt-Algrithm work?<br>An automatic demonstration</h2>
   <script>
   d3.json("demo.json", function(error, json_) {
     json_.features.forEach(showDemoStages)
   })
 
+  //demonstration for that: http://bl.ocks.org/milkbread/7212266
   $(window).resize(function() {
-    location.reload()
-  });
-  
+    //location.reload()
+  });  
   
   function showDemoStages(feature, id){
     var geometries = feature.geometries;
-    var container = d3.select('body').append('div').attr('id',id).attr('class','container')
+    var container = d3.select('body').append('div').attr('class','row').append('div').attr('id',id).attr('class','container')
 
-    container.append('text').text('Stage Nr.'+id).attr('id','text'+id)
-    var test = d3.select('text')
-    console.log(window.innerWidth)
 
-    var width = 500;
-    container.append('div').attr('id','map'+id).style('width',width+'px').style('height','200px').style('margin-left',(window.innerWidth-width)/2 + 'px')
+    container.append('div').attr('class','heading centered').append('text').text('Stage Nr.'+id).attr('id','text'+id)
+    
+    var width = 500, height = 250;
+    container.append('div').attr('id','map'+id).style('width',width+'px').style('height',height+'px')//.style('margin-left',(window.innerWidth-width)/2 + 'px')
     var map = L.map('map'+id).setView([53, 20], 5);
     var data_attrib = " | Data: <a href='http://www.openstreetmap.org/'>&copy; OpenStreetMap </a>contributers | <a href='http://d3js.org/'>D3.js</a>"
     var stamen = L.tileLayer('http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png', {attribution: "Map: <a href='http://maps.stamen.com/#toner/12/37.7706/-122.3782'>Stamen Design</a>" + data_attrib}).addTo(map);
     var baseLayers = {"stamen": stamen};
     var overlays = {};
     var lGroup = L.layerGroup()
+    var pGroup = L.layerGroup()
       
     var color = d3.scale.category10()
 
@@ -53,15 +62,23 @@
         polyline = L.polyline(d.coordinates.map(function(e){return [e[1],e[0]]}), {color: "#f00"});
         overlays['linestring ['+d.coordinates.length+' Points]'] = polyline;
         map.fitBounds(polyline.getBounds())
+
+        d.coordinates.forEach(function(e,i){
+          var circle = L.circle([e[1],e[0]], 100, { color: '#f0f', fillColor: '#f0f'});
+          pGroup.addLayer(circle)
+        })
       }
       else if(d.type=='Polygon'){
-        var polygon = L.polygon(d.coordinates.map(function(f){return f.map(function(g){return [g[1],g[0]]})}), {color: color(i)});
+        var polygon = L.polygon(d.coordinates.map(function(f){return f.map(function(g){return [g[1],g[0]]})}), {color: color(i), onEachFeature: function (feature, layer) {console.log(feature.layer)}});
+        polygon.bindPopup("Area: "+d.properties.area.toFixed(6));
         lGroup.addLayer(polygon);
       }
     })
     lGroup.addTo(map);
-    polyline.addTo(map);
     overlays['triangles'] = lGroup;
+    pGroup.addTo(map);
+    overlays['points'] = pGroup;
+    polyline.addTo(map);
     L.control.layers(baseLayers, overlays).addTo(map)
   }
   
