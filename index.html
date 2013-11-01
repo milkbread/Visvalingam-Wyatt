@@ -57,6 +57,17 @@
     var color = d3.scale.category10()
 
     var polyline;
+
+    var minArea = {'value':Infinity,'index':-1};
+    geometries.forEach(function(d, i){
+      if(d.type=='Polygon'){
+        if(minArea.value > d.properties.area){
+          minArea.value = d.properties.area;
+          minArea.index = i;
+        }
+      }
+    })
+
     geometries.forEach(function(d,i){
       if(d.type=='LineString'){
         polyline = L.polyline(d.coordinates.map(function(e){return [e[1],e[0]]}), {color: "#f00"});
@@ -64,12 +75,14 @@
         map.fitBounds(polyline.getBounds())
 
         d.coordinates.forEach(function(e,i){
-          var circle = L.circle([e[1],e[0]], 100, { color: '#f0f', fillColor: '#f0f'});
+          var circle = L.circle([e[1],e[0]], 100, { color: '#000', fillColor: '#000'});
           pGroup.addLayer(circle)
         })
       }
       else if(d.type=='Polygon'){
-        var polygon = L.polygon(d.coordinates.map(function(f){return f.map(function(g){return [g[1],g[0]]})}), {color: color(i), onEachFeature: function (feature, layer) {console.log(feature.layer)}});
+        if(i != minArea.index)c='#777'
+        else c='#f0f'
+        var polygon = L.polygon(d.coordinates.map(function(f){return f.map(function(g){return [g[1],g[0]]})}), {color: c });//color(i)});
         polygon.bindPopup("Area: "+d.properties.area.toFixed(6));
         lGroup.addLayer(polygon);
       }
