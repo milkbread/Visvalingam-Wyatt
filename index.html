@@ -12,6 +12,11 @@
   .row{
     display:inline-block;
   }
+  .main_container{
+    width:100%;
+    background-color:#ddd;
+    padding-left:7%;
+  }
   .container{
     margin-bottom:10px;
     padding:20px;
@@ -23,23 +28,30 @@
   .centered{
     text-align:center;
   }
+  .margin1{
+    margin:10px;
+  }
+  .main_heading{
+    font-size:32pt;
+  }
+  .description{
+    font-size:22pt;
+  }
   </style>
 </head>
 <body>
-  <h2 class='centered'>How does the Visvalingam-Wyatt-Algrithm work?<br>An automatic demonstration</h2>
   <script>
   d3.json("demo.json", function(error, json_) {
+    d3.select('body').append('p').attr("class","main_heading centered margin1").text(json_.properties.title)
+    d3.select('body').append('p').attr("class","description centered margin1").text(json_.properties.description)
+    d3.select('body').append('div').attr('class','main_container').attr('id','main_container')
+    
     json_.features.forEach(showDemoStages)
   })
 
-  //demonstration for that: http://bl.ocks.org/milkbread/7212266
-  $(window).resize(function() {
-    //location.reload()
-  });  
-  
   function showDemoStages(feature, id){
     var geometries = feature.geometries.features;
-    var container = d3.select('body').append('div').attr('class','row').append('div').attr('id',id).attr('class','container')
+    var container = d3.select('#main_container').append('div').attr('class','row').append('div').attr('id',id).attr('class','container')
 
 
     container.append('div').attr('class','heading centered').append('text').text('Stage Nr.'+id).attr('id','text'+id)

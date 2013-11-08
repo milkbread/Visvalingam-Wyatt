@@ -20,7 +20,9 @@ class VisvalingamSimplification:
 
 		self.json = {}
 		self.json['type']='DemoCollection'
-		self.json['properties']={}
+		title = "Visvalingam-Wyatt"
+		description = "How does it work and what are the intermediate steps?!?"
+		self.json['properties']={"title":title, "description":description}
 		self.json['features'] = []
 		self.featCounter = 0
 
