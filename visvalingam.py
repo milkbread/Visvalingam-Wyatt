@@ -48,7 +48,7 @@ class VisvalingamSimplification:
 		demoFeat['properties']={'id':self.featCounter}
 		demoFeat['stage']=self.featCounter
 		self.featCounter+=1
-		demoFeat['geometries']=[]
+		featColl = {"type":"FeatureCollection", "features":[]}
 		
 		#add the 1st point (static)
 		demoLine = [self.line[0]]
@@ -64,8 +64,10 @@ class VisvalingamSimplification:
 			#add the intermediate points (variable)
 			demoLine.append(self.line[this])
 					
-			demoTriangle = {'type':'Polygon','coordinates':[[self.line[prev], self.line[this], self.line[next],self.line[prev]]], 'properties':{'area':area}}
-			demoFeat['geometries'].append(demoTriangle)
+			#define the Triangle-Geometry
+			demoTriangleObject = {'type':'Polygon','coordinates':[[self.line[prev], self.line[this], self.line[next],self.line[prev]]]}
+			#add the Triangle to the FeatureCollection of the current stage
+			featColl["features"].append({"type":"Feature", 'properties':{'area':area}, "geometry":demoTriangleObject})
 
 			#reset minim value for area, if current is smaller than all previous
 			if(area<minArea):
@@ -80,9 +82,14 @@ class VisvalingamSimplification:
 
 		#add the last point (static)
 		demoLine.append(self.line[len(self.line)-1])
-		
-		demoFeat['geometries'].append({'type':'LineString', 'coordinates':demoLine})
+		#define the Line-Geometry (finally)
+		demoLineObject = {'type':'LineString', 'coordinates':demoLine}
+		#add the Line to the FeatureCollection of the current stage
+		featColl["features"].append({"type":"Feature", "properties":[], "geometry":demoLineObject})
 
+		#add the FeatureCollection to the current stage as 'geometries'-object
+		demoFeat['geometries']=featColl
+		#add the current stage-DemoFeature to the DemoCollection
 		self.json['features'].append(demoFeat)
 		
 		return minArea

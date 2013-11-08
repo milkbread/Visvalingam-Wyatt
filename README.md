@@ -9,7 +9,6 @@ Simple Python-Implementation of a [famous algorithm](http://www2.dcs.hull.ac.uk/
 git clone https://github.com/milkbread/Visvalingam-Wyatt.git
 ```
 
-
 ### Execute by:
 
 * Dummy
@@ -26,6 +25,14 @@ git clone https://github.com/milkbread/Visvalingam-Wyatt.git
 	```sh
 	python simplify.py -h
 	```
+
+### Execute the demoVersion:
+
+```sh
+python simplify.py -i demoData.geojson -o simpleDData.geojson -t 0.0005
+```
+
+*You can find the specification for the DemoJSON-file* [here](https://github.com/WebGeneralisation/VisualiseAlgorithms)
 
 ### View results in browser *(exemplary workflow for tests)*:
 
