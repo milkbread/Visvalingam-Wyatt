@@ -41,7 +41,7 @@
 </head>
 <body>
   <script>
-  d3.json("demo.json", function(error, json_) {
+  d3.json("https://raw.github.com/milkbread/Visvalingam-Wyatt/demoVersion/demo.json", function(error, json_) {
     d3.select('body').append('p').attr("class","main_heading centered margin1").text(json_.properties.title)
     d3.select('body').append('p').attr("class","description centered margin1").text(json_.properties.description)
     d3.select('body').append('div').attr('class','main_container').attr('id','main_container')

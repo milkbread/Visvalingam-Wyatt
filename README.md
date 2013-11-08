@@ -1,30 +1,13 @@
-## Visvalingam-Wyatt
+## Visvalingam-Wyatt-DemoVersion
 ## =================
 
-Simple Python-Implementation of a [famous algorithm](http://www2.dcs.hull.ac.uk/CISRG/publications/DPs/DP10/DP10.html)
+This is branch of the Visvalingam-Wyatt, where I added some code that enables me to:
+	* extract single steps of the algorithm
+	* get the triangle- and linegeometries of each step
+	* store the single steps as DemoJSON-file
 
-### Download the repository:
+***You can find the specification for the DemoJSON-file*** [here](https://github.com/WebGeneralisation/VisualiseAlgorithms)
 
-```sh
-git clone https://github.com/milkbread/Visvalingam-Wyatt.git
-```
-
-### Execute by:
-
-* Dummy
-	```sh
-	python simplify.py -i <inFile> -o <outFile> -t <tolerance>  	
-	```
-
-* Example
-	```sh
-	python simplify.py -i in.json -o out.json -t 0.0005
-	```
-
-* Help
-	```sh
-	python simplify.py -h
-	```
 
 ### Execute the demoVersion:
 
@@ -32,17 +15,19 @@ git clone https://github.com/milkbread/Visvalingam-Wyatt.git
 python simplify.py -i demoData.geojson -o simpleDData.geojson -t 0.0005
 ```
 
-*You can find the specification for the DemoJSON-file* [here](https://github.com/WebGeneralisation/VisualiseAlgorithms)
-
-### View results in browser *(exemplary workflow for tests)*:
+### View the DemoJSON in browser:
 
 * Download the repository
 
-* Simplify your data
+* Simplify your demo data (!Should not contain too many points, as you'll get a step for each one!)
 
 	```sh
-	python simplify.py -i in.json -o out.json -t 0.0005
+	python simplify.py -i demoData.geojson -o simpleDData.geojson -t 0.0005
 	```
+
+* this produces:
+	- simpleDData.geojson
+	- demo.json
 
 * setup local server (!necessary for D3.js!)
 
@@ -51,12 +36,6 @@ python simplify.py -i demoData.geojson -o simpleDData.geojson -t 0.0005
 	```
 
 * open in browser: [localhost:8888/index.html](http://localhost:8888/index.html)
-
-* On Demand: adjust the filenames within the index.html (lines 24 & 28)
-
-* evaluate the resulting data and try another threshold
-
-*Impacient to see some results? See the [index.html](http://milkbread.github.io/Visvalingam-Wyatt) here!*
 
 
 ### Inspired by M.Bostocks JavaScript-Implementation:
