@@ -55,7 +55,7 @@ class VisvalingamSimplification:
 	#check for smallest triangles and remove corresponding points from index
 	def removeSmallestAreaIndex(self, minArea):
 		newIndizes = []
-		print len(self.indizes)
+		# print len(self.indizes)
 		for i in range(1,len(self.indizes)-1):
 			index = self.indizes[i]
 			if(self.line[index][2]>minArea):
