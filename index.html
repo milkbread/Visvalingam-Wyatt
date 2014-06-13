@@ -16,33 +16,36 @@
   var map = L.map('map').setView([53, 20], 5);
   var data_attrib = " | Data: <a href='http://www.openstreetmap.org/'>&copy; OpenStreetMap </a>contributers | <a href='http://d3js.org/'>D3.js</a>"
   var osm = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {attribution: "Map: <a href='http://www.openstreetmap.org/'>&copy; OpenStreetMap </a>contributers" + data_attrib});
-  var esri = L.tileLayer('http://services.arcgisonline.com/ArcGIS/rest/services/World_Physical_Map/MapServer/tile/{z}/{y}/{x}.png', {attribution: "Map: <a href='http://www.arcgis.com/home/item.html?id=c4ec722a1cd34cf0a23904aadf8923a0'>ArcGIS - World Physical Map</a>" + data_attrib});
   var stamen = L.tileLayer('http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png', {attribution: "Map: <a href='http://maps.stamen.com/#toner/12/37.7706/-122.3782'>Stamen Design</a>" + data_attrib}).addTo(map);
-  var baseLayers = {"stamen": stamen, "OpenStreetMap":osm, "World Physical Map":esri};
+  var baseLayers = {"Stamen - toner": stamen, "OpenStreetMap":osm};
   var overlays = {};
 
-  d3.json("in.json", function(error, json) {
-    var polyline = L.polyline(json.coordinates.map(function(d){return [d[1],d[0]]}), {color: "#f00"}).addTo(map);
-    overlays['in.json ['+json.coordinates.length+' Points]'] = polyline;
-  })
-  d3.json("in.json", function(error, json) {
+  function loaded(outJSON, inJSON) {
+
+    var polylineIn = L.polyline(inJSON.coordinates.map(function(d){return [d[1],d[0]]}), {color: "#f00"}).addTo(map);
+    overlays['in.json ['+inJSON.coordinates.length+' Points]'] = polylineIn;
+
+    var polylineOut = L.polyline(outJSON.coordinates.map(function(d){return [d[1],d[0]]}), {color: "#0f0"}).addTo(map);
+    overlays['out.json ['+outJSON.coordinates.length+' Points]'] = polylineOut;
+
     var d3Simplify = d3.simplify();
     d3Simplify.projection(function (point){return point});
-    var allPoints = json.coordinates;
+    var allPoints = inJSON.coordinates;
     d3Simplify( {'type':'LineString', 'coordinates':allPoints})
     allPoints = allPoints.filter(function(point,i){return point[2]>0.07})
-    var polyline = L.polyline(allPoints.map(function(d){return [d[1],d[0]]}), {color: "#00f"}).addTo(map);
-    overlays['compare ['+allPoints.length+' Points]'] = polyline;
-    
-  })
-  d3.json("out.json", function(error, json) {
-    var polyline = L.polyline(json.coordinates.map(function(d){return [d[1],d[0]]}), {color: "#0f0"}).addTo(map);
-    overlays['out.json ['+json.coordinates.length+' Points]'] = polyline;
-  }) 
-  
-  setTimeout(function(){L.control.layers(baseLayers, overlays).addTo(map);},1000);
+    var polylineCom = L.polyline(allPoints.map(function(d){return [d[1],d[0]]}), {color: "#00f"}).addTo(map);
+    overlays["Simplified by 'd3.simplfify' ["+allPoints.length+" Points]"] = polylineCom;
 
-  
+    map.fitBounds(polylineIn.getBounds())
+    L.control.layers(baseLayers, overlays).addTo(map);
+  }
+
+  d3.json("out.json", function(error, outJSON) {
+    d3.json("in.json", function(error, inJSON) {
+      loaded(outJSON, inJSON);
+    });
+  });
+
 </script>
  </body>
 </html>
